@@ -1,5 +1,6 @@
 package com.hamada.android.baking;
 
+import android.content.ComponentName;
 import android.content.res.Configuration;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.hamada.android.baking.Adapter.RecipeAdapter;
 import com.hamada.android.baking.Model.BakingResponse;
+import com.hamada.android.baking.Widget.AppWidgetService;
+import com.hamada.android.baking.Widget.pref;
 import com.hamada.android.baking.internet.Api.Service;
 import com.hamada.android.baking.internet.generator.ServiceGenerator;
 import java.lang.reflect.Type;
@@ -82,16 +85,21 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG,"load data ::");
                 if (response.isSuccessful()){
 
-                    if (response.body() !=null){
+                    if (response.body() !=null) {
 
-                        String listString=response.body().toString();
-                        Type listType=new TypeToken<List<BakingResponse>>(){
+                        String listString = response.body().toString();
+                        Type listType = new TypeToken<List<BakingResponse>>() {
 
                         }.getType();
-                       mListRecipe=getListJsonFromt(listString,listType);
-                       Log.d(TAG,"load item ::"+mListRecipe.get(0));
-                       mRecyclerview.setItemAnimator(new DefaultItemAnimator());
-                       mRecyclerview.setAdapter(new RecipeAdapter(getApplicationContext(),mListRecipe));
+                        mListRecipe = getListJsonFromt(listString, listType);
+                        Log.d(TAG, "load item ::" + mListRecipe.get(0));
+                        mRecyclerview.setItemAnimator(new DefaultItemAnimator());
+                        mRecyclerview.setAdapter(new RecipeAdapter(getApplicationContext(), mListRecipe));
+
+                        // Set the default recipe for the widget
+                        if (pref.loadRecipe(getApplicationContext()) == null) {
+                            AppWidgetService.updateWidget(getApplicationContext(), mListRecipe.get(0));
+                        }
                     }
                 }
             }

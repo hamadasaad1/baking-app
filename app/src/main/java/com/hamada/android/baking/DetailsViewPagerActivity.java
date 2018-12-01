@@ -1,6 +1,9 @@
 package com.hamada.android.baking;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -13,7 +16,11 @@ import android.view.View;
 import com.hamada.android.baking.Adapter.RecipeAdapter;
 import com.hamada.android.baking.FragmentPager.ViewPagerAdapter;
 import com.hamada.android.baking.Model.BakingResponse;
+import com.hamada.android.baking.Model.Ingredient;
 import com.hamada.android.baking.Widget.AppWidgetService;
+import com.hamada.android.baking.Widget.BakingWidget;
+
+import java.util.List;
 
 public class DetailsViewPagerActivity extends AppCompatActivity {
 
@@ -23,6 +30,8 @@ public class DetailsViewPagerActivity extends AppCompatActivity {
     private BakingResponse mBaking;
     private String recipeName;
     private FloatingActionButton fab;
+    private SharedPreferences sharedPreferences;
+
 
 
 
@@ -48,14 +57,51 @@ public class DetailsViewPagerActivity extends AppCompatActivity {
             setTitle(recipeName);
 
         }
+        sharedPreferences = getSharedPreferences(BuildConfig.APPLICATION_ID, MODE_PRIVATE);
+        if ((sharedPreferences.getInt("ID", -1) == mBaking.getId())){
+
+           fab.setImageResource(R.drawable.baseline_favorite_black_18dp);
+        }
         //this button to add in widget
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                AppWidgetService.updateWidget(getApplicationContext(), mBaking);
+
+                boolean isRecipeInWidget = (sharedPreferences.getInt(Utils.PREFERENCES_ID,
+                        -1) == mBaking.getId());
+                if (isRecipeInWidget){
+                    Snackbar.make(view, "Remove from  Widget", Snackbar.LENGTH_LONG)
+                            .show();
+                    sharedPreferences.edit()
+                            .remove(Utils.PREFERENCES_ID)
+                            .remove(Utils.PREFERENCES_WIDGET_TITLE)
+                            .remove(Utils.PREFERENCES_WIDGET_CONTENT)
+                            .apply();
+                    fab.setImageResource(R.drawable.favorite_border_black_18dp);
+                }else {
+                    sharedPreferences
+                            .edit()
+                            .putInt(Utils.PREFERENCES_ID, mBaking.getId())
+                            .putString(Utils.PREFERENCES_WIDGET_TITLE, mBaking.getName())
+                            .putString(Utils.PREFERENCES_WIDGET_CONTENT, ingredientsString())
+                            .apply();
+                    fab.setImageResource(R.drawable.baseline_favorite_black_18dp);
+                    Snackbar.make(view,"Add to Widget",Snackbar.LENGTH_LONG).show();
+                }
+                ComponentName provider = new ComponentName(getApplication(), BakingWidget.class);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+                int[] ids = appWidgetManager.getAppWidgetIds(provider);
+                BakingWidget widget=new BakingWidget();
+                widget.onUpdate(getApplicationContext(),appWidgetManager,ids);
+                //AppWidgetService.updateWidget(getApplicationContext(), mBaking);
             }
         });
+    }
+    private String ingredientsString(){
+        StringBuilder result = new StringBuilder();
+        for (Ingredient ingredient :  mBaking.getIngredients()){
+            result.append(ingredient.getDoseStr()).append(" ").append(ingredient.getIngredient()).append("\n");
+        }
+        return result.toString();
     }
 }

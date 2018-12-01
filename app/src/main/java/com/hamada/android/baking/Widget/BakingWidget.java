@@ -5,11 +5,14 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
+import com.hamada.android.baking.BuildConfig;
 import com.hamada.android.baking.MainActivity;
 import com.hamada.android.baking.Model.BakingResponse;
 import com.hamada.android.baking.R;
+import com.hamada.android.baking.Utils;
 
 /**
  * Implementation of App Widget functionality.
@@ -20,27 +23,42 @@ public class BakingWidget extends AppWidgetProvider {
                                 int appWidgetId) {
 
 
-        BakingResponse mRecipe=pref.loadRecipe(context);
-        if (mRecipe !=null){
-            //to open main activity when click
-            Intent intent=new Intent(context,MainActivity.class);
-            PendingIntent pendingIntent=PendingIntent.getActivity(context,0,intent,0);
+        // Construct the RemoteViews object
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget_layout);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE);
+        views.setTextViewText(R.id.tv_widget_title, sharedPreferences.getString(Utils.PREFERENCES_WIDGET_TITLE, ""));
+        views.setTextViewText(R.id.tv_widget_ingredients, sharedPreferences.getString(Utils.PREFERENCES_WIDGET_CONTENT, ""));
 
-            // Construct the RemoteViews object
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
-            views.setTextViewText(R.id.widget_TextView,mRecipe.getName());
-            //to set click for widget
-            views.setOnClickPendingIntent(R.id.widget_TextView,pendingIntent);
-            // Initialize the list view
-            Intent intent2 = new Intent(context, AppWidgetService.class);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            // Bind the remote adapter
-            views.setRemoteAdapter(R.id.recipe_widget_listview, intent2);
-            // Instruct the widget manager to update the widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.recipe_widget_listview);
+        // open the app if someone click on either of the two textviews of the widget
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.tv_widget_ingredients, pendingIntent);
+        views.setOnClickPendingIntent(R.id.tv_widget_title, pendingIntent);
 
-        }
+        // Instruct the widget manager to update the widget
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+
+//        BakingResponse mRecipe=pref.loadRecipe(context);
+//        if (mRecipe !=null){
+//            //to open main activity when click
+//            Intent intent=new Intent(context,MainActivity.class);
+//            PendingIntent pendingIntent=PendingIntent.getActivity(context,0,intent,0);
+//
+//            // Construct the RemoteViews object
+//            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
+//            views.setTextViewText(R.id.widget_TextView,mRecipe.getName());
+//            //to set click for widget
+//            views.setOnClickPendingIntent(R.id.widget_TextView,pendingIntent);
+//            // Initialize the list view
+//            Intent intent2 = new Intent(context, AppWidgetService.class);
+//            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+//            // Bind the remote adapter
+//            views.setRemoteAdapter(R.id.recipe_widget_listview, intent2);
+//            // Instruct the widget manager to update the widget
+//            appWidgetManager.updateAppWidget(appWidgetId, views);
+//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.recipe_widget_listview);
+//
+//        }
 
 
 
@@ -57,7 +75,7 @@ public class BakingWidget extends AppWidgetProvider {
     public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager,int[] appWidgetIds){
 
         for (int appWidgetId :appWidgetIds){
-            updateAppWidgets(context,appWidgetManager,appWidgetIds);
+            updateAppWidget(context,appWidgetManager,appWidgetId);
         }
     }
     @Override

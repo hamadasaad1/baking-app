@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hamada.android.baking.Utils;
 
 public class Ingredient implements Parcelable {
     @SerializedName("quantity")
@@ -24,6 +25,9 @@ public class Ingredient implements Parcelable {
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
+    }
+    public String getDoseStr(){
+        return Utils.fmt(quantity)  + " " +measure;
     }
 
     public static final Creator<Ingredient> CREATOR=new Creator<Ingredient>() {
