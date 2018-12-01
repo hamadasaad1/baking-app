@@ -3,12 +3,22 @@ package com.hamada.android.baking.Model;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Base64;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orhanobut.logger.Logger;
+
+import java.io.IOException;
 
 public class BakingResponse implements Parcelable {
     @SerializedName("id")
@@ -128,5 +138,26 @@ public class BakingResponse implements Parcelable {
         this.servings= (Integer) in.readValue(Integer.class.getClassLoader());
         this.image=in.readString();
 
+    }
+    public static String toBase64String(BakingResponse recipe) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return Base64.encodeToString(mapper.writeValueAsBytes(recipe), 0);
+        } catch (JsonProcessingException e) {
+            Logger.e(e.getMessage());
+        }
+        return null;
+    }
+
+    public static BakingResponse fromBase64(String encoded) {
+        if (!"".equals(encoded)) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                return mapper.readValue(Base64.decode(encoded, 0), BakingResponse.class);
+            } catch (IOException e) {
+                Logger.e(e.getMessage());
+            }
+        }
+        return null;
     }
 }
