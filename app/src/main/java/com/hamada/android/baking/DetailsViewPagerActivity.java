@@ -7,10 +7,12 @@ import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.hamada.android.baking.Adapter.RecipeAdapter;
@@ -99,6 +101,7 @@ public class DetailsViewPagerActivity extends AppCompatActivity {
                 //AppWidgetService.updateWidget(getApplicationContext(), mBaking);
             }
         });
+
     }
     private String ingredientsString(){
         StringBuilder result = new StringBuilder();
@@ -106,5 +109,15 @@ public class DetailsViewPagerActivity extends AppCompatActivity {
             result.append(ingredient.getDoseStr()).append(" ").append(ingredient.getIngredient()).append("\n");
         }
         return result.toString();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

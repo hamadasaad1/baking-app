@@ -26,7 +26,8 @@
         <activity
             android:name=".DetailsViewPagerActivity"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyMaterialTheme" />
+            android:theme="@style/MyMaterialTheme"
+            />
 
         <receiver android:name=".Widget.BakingWidget">
             <intent-filter>
