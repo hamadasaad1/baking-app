@@ -22,15 +22,19 @@ import com.hamada.android.baking.Widget.BakingWidget;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailsViewPagerActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;
+     @BindView(R.id.viewPager) ViewPager viewPager;
     private ViewPagerAdapter adapter;
-    private TabLayout tabLayout;
+     @BindView(R.id.tabs) TabLayout tabLayout;
     private BakingResponse mBaking;
     private String recipeName;
-    private FloatingActionButton fab;
+
     private SharedPreferences sharedPreferences;
+     @BindView(R.id.fab) FloatingActionButton fab;
 
 
 
@@ -39,14 +43,13 @@ public class DetailsViewPagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_view_pager);
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        viewPager=findViewById(R.id.viewPager);
+
         adapter=new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        fab = findViewById(R.id.fab);
-        tabLayout =  findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         Intent intent=getIntent();

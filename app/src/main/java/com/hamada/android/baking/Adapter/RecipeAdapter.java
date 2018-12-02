@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hamada.android.baking.DetailsActivity;
 import com.hamada.android.baking.DetailsViewPagerActivity;
 import com.hamada.android.baking.Model.BakingResponse;
 import com.hamada.android.baking.R;

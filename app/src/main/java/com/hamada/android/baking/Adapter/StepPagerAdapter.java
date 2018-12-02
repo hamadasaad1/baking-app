@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.hamada.android.baking.Model.Step;
 import com.hamada.android.baking.R;
 import com.hamada.android.baking.StepActivity;
-import com.hamada.android.baking.stepFragment;
+import com.hamada.android.baking.StepFragment;
 
 import java.util.List;
 
@@ -24,9 +24,9 @@ import butterknife.ButterKnife;
 public class StepPagerAdapter extends RecyclerView.Adapter<StepPagerAdapter.ViewHolder> {
 
     private List<Object> list;
-    public boolean isTwoPane;
+    private boolean isTwoPane;
     public static final String EXTRASTEP="steps";
-    Context context;
+    private Context context;
 
     public StepPagerAdapter(List<Object> list) {
         this.list = list;
@@ -75,7 +75,7 @@ public class StepPagerAdapter extends RecyclerView.Adapter<StepPagerAdapter.View
                             Bundle argument = new Bundle();
                             argument.putParcelable(EXTRASTEP, clickItem);
                             //create fragment when activity is tablet
-                            stepFragment fragment=new stepFragment();
+                            StepFragment fragment=new StepFragment();
                             fragment.setArguments(argument);
                             //getSupportFragmentManager().beginTransaction().replace(R.id.item_details_container,
                             //       fragment);

@@ -19,10 +19,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailsActivity"
-            android:label="Details"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".StepActivity"
             android:label="Video"
             android:configChanges="orientation"

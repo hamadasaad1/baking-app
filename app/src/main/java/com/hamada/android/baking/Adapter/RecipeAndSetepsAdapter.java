@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +15,7 @@ import com.hamada.android.baking.Model.Ingredient;
 import com.hamada.android.baking.Model.Step;
 import com.hamada.android.baking.R;
 import com.hamada.android.baking.StepActivity;
-import com.hamada.android.baking.stepFragment;
+import com.hamada.android.baking.StepFragment;
 
 import java.util.List;
 
@@ -134,7 +132,7 @@ public class RecipeAndSetepsAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                             Bundle argument = new Bundle();
                             argument.putParcelable(EXTRASTEP, clickItem);
                             //create fragment when activity is tablet
-                            stepFragment fragment=new stepFragment();
+                            StepFragment fragment=new StepFragment();
                             fragment.setArguments(argument);
 
                             //getSupportFragmentManager().beginTransaction().replace(R.id.item_details_container,

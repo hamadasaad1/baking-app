@@ -102,7 +102,7 @@ public class StepActivity extends AppCompatActivity  {
 //            Bundle bundle=new Bundle();
 //            bundle.putParcelable(StepPagerAdapter.EXTRASTEP,getIntent().getParcelableExtra(StepPagerAdapter.EXTRASTEP));
 //
-//            stepFragment fragment=new stepFragment();
+//            StepFragment fragment=new StepFragment();
 //            fragment.setArguments(bundle);
 //            FragmentManager fragmentManager=getSupportFragmentManager();
 //            fragmentManager.beginTransaction().replace(R.id.fragment_container,fragment)
@@ -117,7 +117,7 @@ public class StepActivity extends AppCompatActivity  {
             Bundle bundle=new Bundle();
             bundle.putParcelable(StepPagerAdapter.EXTRASTEP,getIntent().getParcelableExtra(StepPagerAdapter.EXTRASTEP));
 
-            stepFragment fragment=new stepFragment();
+            StepFragment fragment=new StepFragment();
             fragment.setArguments(bundle);
             FragmentManager fragmentManager=getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.fragment_container,fragment)

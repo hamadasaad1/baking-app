@@ -39,8 +39,8 @@ import com.hamada.android.baking.Adapter.StepPagerAdapter;
 import com.hamada.android.baking.Model.Step;
 import com.squareup.picasso.Picasso;
 
-public class stepFragment extends Fragment implements ExoPlayer.EventListener {
-    public static final String TAG=stepFragment.class.getSimpleName();
+public class StepFragment extends Fragment implements ExoPlayer.EventListener {
+    public static final String TAG=StepFragment.class.getSimpleName();
     private Step mStep;
     private TextView mTextViewDescription;
     private String mDescrption,mUrl,mThumbnailURL,mVideoUrl;
@@ -54,7 +54,7 @@ public class stepFragment extends Fragment implements ExoPlayer.EventListener {
     boolean playWhenReady;
     SimpleExoPlayerView simpleExoPlayerView;
 
-    public stepFragment() {
+    public StepFragment() {
 
     }
 
