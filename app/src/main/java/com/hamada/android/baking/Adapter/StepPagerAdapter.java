@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import butterknife.ButterKnife;
 
 public class StepPagerAdapter extends RecyclerView.Adapter<StepPagerAdapter.ViewHolder> {
 
+FragmentManager fragmentManager;
     private List<Object> list;
     private boolean isTwoPane;
     public static final String EXTRASTEP="steps";
@@ -65,6 +68,7 @@ public class StepPagerAdapter extends RecyclerView.Adapter<StepPagerAdapter.View
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            context = itemView.getContext();
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,8 +81,10 @@ public class StepPagerAdapter extends RecyclerView.Adapter<StepPagerAdapter.View
                             //create fragment when activity is tablet
                             StepFragment fragment=new StepFragment();
                             fragment.setArguments(argument);
-                            //getSupportFragmentManager().beginTransaction().replace(R.id.item_details_container,
-                            //       fragment);
+
+                            ((AppCompatActivity)context).getSupportFragmentManager()
+                                    .beginTransaction().replace(R.id.fragment_container,fragment)
+                                    .commit();
 
                         }else {
                             Context context=v.getContext();
