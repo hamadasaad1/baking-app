@@ -19,6 +19,7 @@ import com.hamada.android.baking.Model.BakingResponse;
 import com.hamada.android.baking.Model.Ingredient;
 import com.hamada.android.baking.Model.Step;
 import com.hamada.android.baking.R;
+import com.hamada.android.baking.StepActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,21 +16,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -39,7 +32,8 @@ import com.hamada.android.baking.Adapter.StepPagerAdapter;
 import com.hamada.android.baking.Model.Step;
 import com.squareup.picasso.Picasso;
 
-public class StepFragment extends Fragment implements ExoPlayer.EventListener {
+public class StepFragment extends Fragment  {
+    //implements ExoPlayer.EventListener
     public static final String TAG=StepFragment.class.getSimpleName();
     private Step mStep;
     private TextView mTextViewDescription;
@@ -48,11 +42,13 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     private MediaSessionCompat mediaSessionCompat;
     private PlaybackStateCompat.Builder playbackBuilder;
     private Uri videoUri;
-    ImageView placeHolderImage;
-    SimpleExoPlayer simpleExoPlayer;
-    long positionPlayer;
-    boolean playWhenReady;
-    SimpleExoPlayerView simpleExoPlayerView;
+    private ImageView placeHolderImage;
+    private SimpleExoPlayer simpleExoPlayer;
+    private long positionPlayer=-1;
+    private boolean playWhenReady=true;
+    private SimpleExoPlayerView simpleExoPlayerView;
+    private static final String POSITION_KEY="position_key";
+    private static final String PLAY_WHEN_READY_KEY="play_ready";
 
     public StepFragment() {
 
@@ -71,14 +67,28 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(POSITION_KEY, simpleExoPlayer.getCurrentPosition());
+        outState.putBoolean(PLAY_WHEN_READY_KEY,simpleExoPlayer.getPlayWhenReady());
+
+    }
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.steps_fragment, container, false);
         mTextViewDescription = view.findViewById(R.id.descriptionStep);
         placeHolderImage = view.findViewById(R.id.imageUrl);
         simpleExoPlayerView = view.findViewById(R.id.playerView);
+        if (savedInstanceState !=null&&savedInstanceState.containsKey(POSITION_KEY)){
+            positionPlayer=savedInstanceState.getLong(POSITION_KEY);
+            playWhenReady=savedInstanceState.getBoolean(PLAY_WHEN_READY_KEY);
+            simpleExoPlayer.seekTo(positionPlayer);
+        }
         if (mUrl != null) {
             if (mUrl.equals("")) {
                 Log.d(TAG, "EMPTY URL");
@@ -136,7 +146,7 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
                         PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
                         PlaybackStateCompat.ACTION_PLAY_PAUSE);
         mediaSessionCompat.setPlaybackState(playbackBuilder.build());
-        mediaSessionCompat.setCallback(new SessionCallBacks());
+       // mediaSessionCompat.setCallback(new SessionCallBacks());
         mediaSessionCompat.setActive(true);
     }
     private void hideUI() {
@@ -159,7 +169,7 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
             simpleExoPlayer = ExoPlayerFactory.newSimpleInstance
                     (getActivity(), trackSelector, loadControl);
             simpleExoPlayerView.setPlayer(simpleExoPlayer);
-            simpleExoPlayer.addListener(this);
+            //simpleExoPlayer.addListener(this);
             String userAgent = Util.getUserAgent(getActivity(),
                     "Baking");
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri,
@@ -191,14 +201,8 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     public void onPause() {
         //releasing in Pause and saving current position for resuming
         super.onPause();
-        if (simpleExoPlayer != null) {
-            positionPlayer = simpleExoPlayer.getCurrentPosition();
-            //getting play when ready so that player can be properly store state on rotation
-            playWhenReady = simpleExoPlayer.getPlayWhenReady();
-            simpleExoPlayer.stop();
-            simpleExoPlayer.release();
-            simpleExoPlayer = null;
-        }
+
+        releasePlayer();
     }
 
     @Override
@@ -217,67 +221,4 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         }
     }
 
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
-
-    }
-
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-    }
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if (playbackState == ExoPlayer.STATE_READY && playWhenReady) {
-            playbackBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
-                    simpleExoPlayer.getCurrentPosition(), 1f);
-        } else if (playbackState == ExoPlayer.STATE_READY) {
-            playbackBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                    simpleExoPlayer.getCurrentPosition(), 1f);
-        }
-        mediaSessionCompat.setPlaybackState(playbackBuilder.build());
-
-    }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-
-    }
-
-    @Override
-    public void onPositionDiscontinuity() {
-
-    }
-
-    @Override
-    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-    }
-
-    private class SessionCallBacks extends MediaSessionCompat.Callback {
-
-        @Override
-        public void onPlay() {
-            super.onPlay();
-            simpleExoPlayer.setPlayWhenReady(true);
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-            simpleExoPlayer.setPlayWhenReady(false);
-        }
-
-        @Override
-        public void onSkipToPrevious() {
-            super.onSkipToPrevious();
-            simpleExoPlayer.seekTo(0);
-        }
-    }
 }

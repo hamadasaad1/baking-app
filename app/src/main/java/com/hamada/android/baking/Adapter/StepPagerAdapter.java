@@ -25,14 +25,15 @@ import butterknife.ButterKnife;
 
 public class StepPagerAdapter extends RecyclerView.Adapter<StepPagerAdapter.ViewHolder> {
 
-FragmentManager fragmentManager;
+
     private List<Object> list;
     private boolean isTwoPane;
     public static final String EXTRASTEP="steps";
     private Context context;
 
-    public StepPagerAdapter(List<Object> list) {
+    public StepPagerAdapter(List<Object> list,boolean isTwoPane) {
         this.list = list;
+        this.isTwoPane=isTwoPane;
     }
 
     @NonNull
@@ -83,7 +84,7 @@ FragmentManager fragmentManager;
                             fragment.setArguments(argument);
 
                             ((AppCompatActivity)context).getSupportFragmentManager()
-                                    .beginTransaction().replace(R.id.fragment_container,fragment)
+                                    .beginTransaction().replace(R.id.frame_containar,fragment)
                                     .commit();
 
                         }else {

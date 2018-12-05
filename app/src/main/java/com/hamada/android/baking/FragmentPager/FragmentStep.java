@@ -14,10 +14,12 @@ import android.widget.Toast;
 
 import com.hamada.android.baking.Adapter.RecipeAdapter;
 import com.hamada.android.baking.Adapter.StepPagerAdapter;
+import com.hamada.android.baking.DetailsViewPagerActivity;
 import com.hamada.android.baking.Model.BakingResponse;
 import com.hamada.android.baking.Model.Ingredient;
 import com.hamada.android.baking.Model.Step;
 import com.hamada.android.baking.R;
+import com.hamada.android.baking.StepActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +58,7 @@ public class FragmentStep extends Fragment {
             Toast.makeText(getActivity(), "not data", Toast.LENGTH_SHORT).show();
         }
         recyclerView =view.findViewById(R.id.item_list_recycler_view);
-        StepPagerAdapter adapter=new StepPagerAdapter(bakingObject);
+        StepPagerAdapter adapter=new StepPagerAdapter(bakingObject,DetailsViewPagerActivity.isTwoPane);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

@@ -21,6 +21,7 @@ public class IngredientPagerAdapter extends RecyclerView.Adapter<IngredientPager
 
     public IngredientPagerAdapter(List<Object> list) {
         this.list = list;
+
     }
 
     @NonNull

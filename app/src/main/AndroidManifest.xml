@@ -21,7 +21,7 @@
         <activity
             android:name=".StepActivity"
             android:label="Video"
-            android:configChanges="orientation"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/videoStyle"/>
         <activity
             android:name=".DetailsViewPagerActivity"

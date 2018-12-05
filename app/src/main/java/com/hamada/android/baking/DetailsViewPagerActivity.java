@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.hamada.android.baking.Adapter.RecipeAdapter;
+import com.hamada.android.baking.Adapter.StepPagerAdapter;
 import com.hamada.android.baking.FragmentPager.ViewPagerAdapter;
 import com.hamada.android.baking.Model.BakingResponse;
 import com.hamada.android.baking.Model.Ingredient;
@@ -34,7 +36,7 @@ public class DetailsViewPagerActivity extends AppCompatActivity {
      @BindView(R.id.tabs) TabLayout tabLayout;
     private BakingResponse mBaking;
     private String recipeName;
-
+    public static boolean isTwoPane;
     private SharedPreferences sharedPreferences;
      @BindView(R.id.fab) FloatingActionButton fab;
 
@@ -53,7 +55,7 @@ public class DetailsViewPagerActivity extends AppCompatActivity {
         adapter=new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-
+        intialView();
         Intent intent=getIntent();
         if (intent.hasExtra(RecipeAdapter.RECIPE_EXTRA)) {
             mBaking = getIntent().getParcelableExtra(RecipeAdapter.RECIPE_EXTRA);
@@ -119,5 +121,25 @@ public class DetailsViewPagerActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void intialView(){
+
+
+        if (findViewById(R.id.item_details_container_fragment )!=null){
+
+            isTwoPane=true;
+//            Bundle bundle=new Bundle();
+//            bundle.putParcelable(StepPagerAdapter.EXTRASTEP,getIntent().getParcelableExtra(StepPagerAdapter.EXTRASTEP));
+//
+//            StepFragment fragment=new StepFragment();
+//            fragment.setArguments(bundle);
+//            FragmentManager fragmentManager=getSupportFragmentManager();
+//            fragmentManager.beginTransaction().add(R.id.frame_containar
+//                    ,fragment)
+//                    .commit();
+
+        }else {
+            isTwoPane=false;
+        }
     }
 }
