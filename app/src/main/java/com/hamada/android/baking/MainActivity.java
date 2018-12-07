@@ -11,6 +11,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -71,6 +73,17 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerview.setLayoutManager(new GridLayoutManager(this,3));
         }
 
+        //this for skeleton screen look like facebook when load data
+        final SkeletonScreen skeletonScreen = Skeleton.bind(mRecyclerview)
+                .adapter(mAdapter)
+                .shimmer(true)
+                .angle(20)
+                .frozen(false)
+                .duration(1200)
+                .count(10)
+                .load(R.layout.item_skeleton_news)
+                .show();
+
         loadJson();
 
     }
@@ -95,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "load item ::" + mListRecipe.get(0));
                         mRecyclerview.setItemAnimator(new DefaultItemAnimator());
                         mRecyclerview.setAdapter(new RecipeAdapter(getApplicationContext(), mListRecipe));
-
+                         mAdapter=new RecipeAdapter(getApplicationContext(),mListRecipe);
                         // Set the default recipe for the widget
                         if (pref.loadRecipe(getApplicationContext()) == null) {
                             AppWidgetService.updateWidget(getApplicationContext(), mListRecipe.get(0));
